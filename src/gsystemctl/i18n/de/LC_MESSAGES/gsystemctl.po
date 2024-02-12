@@ -1,0 +1,192 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gsystemctl package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gsystemctl 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-12 17:37+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/gsystemctl/__init__.py:17 src/gsystemctl/__init__.py:17
+msgid "Control the systemd service manager"
+msgstr "Steuerung des Systemd Dienste Verwalters"
+
+#: src/gsystemctl/__init__.py:21 src/gsystemctl/__init__.py:21
+msgid "Copyright © {} Ferenc Kretz"
+msgstr "Copyright © {} Ferenc Kretz"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:20
+#: src/gsystemctl/ui/gtk3/mainwindow.py:23
+msgid "loaded system units"
+msgstr "System Units geladen wurden"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:21
+#: src/gsystemctl/ui/gtk3/mainwindow.py:29
+#: src/gsystemctl/ui/gtk3/mainwindow.py:36
+#: src/gsystemctl/ui/gtk3/mainwindow.py:44
+#: src/gsystemctl/ui/gtk3/mainwindow.py:24
+#: src/gsystemctl/ui/gtk3/mainwindow.py:32
+#: src/gsystemctl/ui/gtk3/mainwindow.py:39
+#: src/gsystemctl/ui/gtk3/mainwindow.py:47
+msgid "Type"
+msgstr "Typ"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:21
+#: src/gsystemctl/ui/gtk3/mainwindow.py:29
+#: src/gsystemctl/ui/gtk3/mainwindow.py:36
+#: src/gsystemctl/ui/gtk3/mainwindow.py:44
+#: src/gsystemctl/ui/gtk3/mainwindow.py:24
+#: src/gsystemctl/ui/gtk3/mainwindow.py:32
+#: src/gsystemctl/ui/gtk3/mainwindow.py:39
+#: src/gsystemctl/ui/gtk3/mainwindow.py:47
+msgid "Name"
+msgstr "Name"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:21
+#: src/gsystemctl/ui/gtk3/mainwindow.py:36
+#: src/gsystemctl/ui/gtk3/mainwindow.py:24
+#: src/gsystemctl/ui/gtk3/mainwindow.py:39
+msgid "Load state"
+msgstr "Geladenstatus"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:22
+#: src/gsystemctl/ui/gtk3/mainwindow.py:37
+#: src/gsystemctl/ui/gtk3/mainwindow.py:25
+#: src/gsystemctl/ui/gtk3/mainwindow.py:40
+msgid "Active state"
+msgstr "Aktivitätsstatus"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:22
+#: src/gsystemctl/ui/gtk3/mainwindow.py:37
+#: src/gsystemctl/ui/gtk3/mainwindow.py:25
+#: src/gsystemctl/ui/gtk3/mainwindow.py:40
+msgid "Sub state"
+msgstr "Unterstatus"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:22
+#: src/gsystemctl/ui/gtk3/mainwindow.py:37
+#: src/gsystemctl/ui/gtk3/mainwindow.py:25
+#: src/gsystemctl/ui/gtk3/mainwindow.py:40
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:24
+#: src/gsystemctl/ui/gtk3/mainwindow.py:39
+#: src/gsystemctl/ui/gtk3/mainwindow.py:27
+#: src/gsystemctl/ui/gtk3/mainwindow.py:42
+msgid "{} loaded units listed"
+msgstr "{} Units aufgelistet"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:28
+#: src/gsystemctl/ui/gtk3/mainwindow.py:31
+msgid "system template files"
+msgstr "System Vorlagendatei"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:29
+#: src/gsystemctl/ui/gtk3/mainwindow.py:44
+#: src/gsystemctl/ui/gtk3/mainwindow.py:32
+#: src/gsystemctl/ui/gtk3/mainwindow.py:47
+msgid "File state"
+msgstr "Dateistatus"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:29
+#: src/gsystemctl/ui/gtk3/mainwindow.py:44
+#: src/gsystemctl/ui/gtk3/mainwindow.py:32
+#: src/gsystemctl/ui/gtk3/mainwindow.py:47
+msgid "Preset"
+msgstr "Grundzustand"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:31
+#: src/gsystemctl/ui/gtk3/mainwindow.py:46
+#: src/gsystemctl/ui/gtk3/mainwindow.py:34
+#: src/gsystemctl/ui/gtk3/mainwindow.py:49
+msgid "{} unit files listed"
+msgstr "{} Vorlagendatei aufgelistet"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:35
+#: src/gsystemctl/ui/gtk3/mainwindow.py:38
+msgid "loaded user units"
+msgstr "Benutzer Units geladen wurden"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:43
+#: src/gsystemctl/ui/gtk3/mainwindow.py:46
+msgid "user template files"
+msgstr "Benutzer Vorlagendatei"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:80
+#: src/gsystemctl/ui/gtk3/mainwindow.py:85
+msgid "Refresh page"
+msgstr "Aktualisieren"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:146
+#: src/gsystemctl/ui/gtk3/mainwindow.py:255
+#: src/gsystemctl/ui/gtk3/mainwindow.py:267
+#: src/gsystemctl/ui/gtk3/mainwindow.py:279
+#: src/gsystemctl/ui/gtk3/mainwindow.py:291
+#: src/gsystemctl/ui/gtk3/mainwindow.py:303
+#: src/gsystemctl/ui/gtk3/mainwindow.py:315
+#: src/gsystemctl/ui/gtk3/mainwindow.py:327
+#: src/gsystemctl/ui/gtk3/mainwindow.py:151
+#: src/gsystemctl/ui/gtk3/mainwindow.py:260
+#: src/gsystemctl/ui/gtk3/mainwindow.py:272
+#: src/gsystemctl/ui/gtk3/mainwindow.py:284
+#: src/gsystemctl/ui/gtk3/mainwindow.py:296
+#: src/gsystemctl/ui/gtk3/mainwindow.py:308
+#: src/gsystemctl/ui/gtk3/mainwindow.py:320
+#: src/gsystemctl/ui/gtk3/mainwindow.py:332
+msgid "Error"
+msgstr "Fehler"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:203
+#: src/gsystemctl/ui/gtk3/mainwindow.py:208
+msgid "Runtime information"
+msgstr "Laufzeitinformationen"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:205
+#: src/gsystemctl/ui/gtk3/mainwindow.py:210
+msgid "Start"
+msgstr "Start"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:206
+#: src/gsystemctl/ui/gtk3/mainwindow.py:211
+msgid "Stop"
+msgstr "Stop"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:207
+#: src/gsystemctl/ui/gtk3/mainwindow.py:212
+msgid "Restart"
+msgstr "Restart"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:209
+#: src/gsystemctl/ui/gtk3/mainwindow.py:214
+msgid "Enable"
+msgstr "Aktivierung"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:210
+#: src/gsystemctl/ui/gtk3/mainwindow.py:215
+msgid "Disable"
+msgstr "Deaktivierung"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:211
+#: src/gsystemctl/ui/gtk3/mainwindow.py:216
+msgid "Reenable"
+msgstr "Reaktivierung"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:246
+#: src/gsystemctl/ui/gtk3/mainwindow.py:251
+msgid "Runtime status information"
+msgstr "Laufzeitinformationen"
+
+#: src/gsystemctl/ui/gtk3/mainwindow.py:63
+msgid "About"
+msgstr "Über"

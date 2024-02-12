@@ -1,0 +1,5 @@
+Version 0.1.1
+- fix __package__ path error if not installed
+  (add __package__ path in gsystemctl-gtk3.py)
+- add german translation
+- add hungarian translation

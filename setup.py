@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='gsystemctl',
-    version='0.1.0',
+    version='0.1.1',
     description='Control the systemd service manager',
     license='GPLv3',
     classifiers=[
@@ -26,6 +26,8 @@ setup(
     package_data={
         'gsystemctl.ui.image': ['*.png'],
         'gsystemctl.ui.gtk3.glade': ['*.ui'],
+        'gsystemctl.i18n.de.LC_MESSAGES': ['*.mo'],
+        'gsystemctl.i18n.hu.LC_MESSAGES': ['*.mo'],
     },
     entry_points={
         'gui_scripts': [

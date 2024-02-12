@@ -1,3 +1,4 @@
+import gettext
 import os
 
 from gi.repository import Gdk, Gio, GLib, Gtk, GdkPixbuf
@@ -5,6 +6,7 @@ from gi.repository import Gdk, Gio, GLib, Gtk, GdkPixbuf
 from gsystemctl import *
 from gsystemctl.systemctl import *
 from gsystemctl.ui.gtk3 import *
+
 
 
 @Gtk.Template.from_file(os.path.join(GLADE_UI_PATH, 'mainwindow.ui'))
@@ -15,30 +17,39 @@ class MainWindow(Gtk.ApplicationWindow):
     notebook: Gtk.Notebook = Gtk.Template.Child()
     page_status: Gtk.Label = Gtk.Template.Child()
     page_selector: Gtk.MenuButton = Gtk.Template.Child()
+    about_item: Gtk.MenuItem = Gtk.Template.Child()
 
-    MODEL_PROPS = {
-        'units': {
-            'page-title': 'loaded {} units',
-            'column-titles': ['Type', 'Name', 'Load state', 'Active state', 'Sub state', 'Description'],
-            'store': Gtk.ListStore(str, str, str, str, str, str),
-            'status': '{} loaded units listed',
-            'list-type': SystemctlListType.UNITS
-        },
-        'files': {
-            'page-title': '{} template files',
-            'column-titles': ['Type', 'Name', 'File state', 'Preset'],
-            'store': Gtk.ListStore(str, str, str, str),
-            'status': '{} unit files listed',
-            'list-type': SystemctlListType.UNITS_FILES
-        }
-    }
-
-    NOTEBOOK_PROPS = [
-        MODEL_PROPS['units'] | {'call-type': SystemctlCallType.SYSTEM},
-        MODEL_PROPS['files'] | {'call-type': SystemctlCallType.SYSTEM},
-        MODEL_PROPS['units'] | {'call-type': SystemctlCallType.USER},
-        MODEL_PROPS['files'] | {'call-type': SystemctlCallType.USER},
-    ]
+    NOTEBOOK_PROPS = [{
+        'page-title': _('loaded system units'),
+        'column-titles': [_('Type'), _('Name'), _('Load state'),
+                          _('Active state'), _('Sub state'), _('Description')],
+        'store': Gtk.ListStore(str, str, str, str, str, str),
+        'status': _('{} loaded units listed'),
+        'list-type': SystemctlListType.UNITS,
+        'call-type': SystemctlCallType.SYSTEM
+    }, {
+        'page-title': _('system template files'),
+        'column-titles': [_('Type'), _('Name'), _('File state'), _('Preset')],
+        'store': Gtk.ListStore(str, str, str, str),
+        'status': _('{} unit files listed'),
+        'list-type': SystemctlListType.UNITS_FILES,
+        'call-type': SystemctlCallType.SYSTEM
+    }, {
+        'page-title': _('loaded user units'),
+        'column-titles': [_('Type'), _('Name'), _('Load state'),
+                          _('Active state'), _('Sub state'), _('Description')],
+        'store': Gtk.ListStore(str, str, str, str, str, str),
+        'status': _('{} loaded units listed'),
+        'list-type': SystemctlListType.UNITS,
+        'call-type': SystemctlCallType.USER
+    }, {
+        'page-title': _('user template files'),
+        'column-titles': [_('Type'), _('Name'), _('File state'), _('Preset')],
+        'store': Gtk.ListStore(str, str, str, str),
+        'status': _('{} unit files listed'),
+        'list-type': SystemctlListType.UNITS_FILES,
+        'call-type': SystemctlCallType.USER
+    }]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,12 +60,14 @@ class MainWindow(Gtk.ApplicationWindow):
     def init_components(self):
         self.header_bar.set_title(APP_NAME)
 
+        self.about_item.set_label(_("About"))
+
         # Add pages for notebook
         for i, page_props in enumerate(self.NOTEBOOK_PROPS):
             view = Gtk.TreeView()
             self.NOTEBOOK_PROPS[i] |= {'view': view}
             for j, title in enumerate(page_props['column-titles']):
-                column = Gtk.TreeViewColumn(_(title), Gtk.CellRendererText(), text=j)
+                column = Gtk.TreeViewColumn(title, Gtk.CellRendererText(), text=j)
                 view.append_column(column)
                 column.set_sort_column_id(j)
                 column.set_resizable(True)
@@ -75,7 +88,7 @@ class MainWindow(Gtk.ApplicationWindow):
         item = Gtk.SeparatorMenuItem()
         page_menu.append(item)
         for i, page_props in enumerate(self.NOTEBOOK_PROPS):
-            item = Gtk.MenuItem(_(page_props['page-title']).format(_(page_props['call-type'])).capitalize())
+            item = Gtk.MenuItem(page_props['page-title'].capitalize())
             item.set_action_name('win.select-page')
             item.set_action_target_value(GLib.Variant('i', i))
             page_menu.append(item)
@@ -139,8 +152,8 @@ class MainWindow(Gtk.ApplicationWindow):
             dialog.run()
             dialog.destroy()
 
-        self.header_bar.set_subtitle(_(page_props['page-title']).format(_(page_props['call-type'])))
-        self.page_status.set_label(_(page_props['status']).format(row_count))
+        self.header_bar.set_subtitle(page_props['page-title'])
+        self.page_status.set_label(page_props['status'].format(row_count))
 
     def refresh_page_action(self, action, value):
         self.refresh_page()
@@ -192,15 +205,15 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.lookup_action(f'systemctl-{key}').set_enabled(value)
 
             menu = Gtk.Menu()
-            menu.add(Gtk.MenuItem(label=('Runtime information'), action_name='win.systemctl-status'))
+            menu.add(Gtk.MenuItem(label=_('Runtime information'), action_name='win.systemctl-status'))
             menu.add(Gtk.SeparatorMenuItem())
-            menu.add(Gtk.MenuItem(label=('Start'), action_name='win.systemctl-start'))
-            menu.add(Gtk.MenuItem(label=('Stop'), action_name='win.systemctl-stop'))
-            menu.add(Gtk.MenuItem(label=('Restart'), action_name='win.systemctl-restart'))
+            menu.add(Gtk.MenuItem(label=_('Start'), action_name='win.systemctl-start'))
+            menu.add(Gtk.MenuItem(label=_('Stop'), action_name='win.systemctl-stop'))
+            menu.add(Gtk.MenuItem(label=_('Restart'), action_name='win.systemctl-restart'))
             menu.add(Gtk.SeparatorMenuItem())
-            menu.add(Gtk.MenuItem(label=('Enable'), action_name='win.systemctl-enable'))
-            menu.add(Gtk.MenuItem(label=('Disable'), action_name='win.systemctl-disable'))
-            menu.add(Gtk.MenuItem(label=('Reenable'), action_name='win.systemctl-reenable'))
+            menu.add(Gtk.MenuItem(label=_('Enable'), action_name='win.systemctl-enable'))
+            menu.add(Gtk.MenuItem(label=_('Disable'), action_name='win.systemctl-disable'))
+            menu.add(Gtk.MenuItem(label=_('Reenable'), action_name='win.systemctl-reenable'))
             menu.show_all()
             menu.attach_to_widget(self)
             menu.popup_at_pointer(event_button)
