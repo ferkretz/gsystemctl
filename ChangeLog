@@ -3,3 +3,10 @@ Version 0.1.1
   (add __package__ path in gsystemctl-gtk3.py)
 - add german translation
 - add hungarian translation
+
+Version 0.2.0
+- new Gtk4 ui
+- better systemctl for newer versions
+- add filter
+- add statusbar
+- add parameter input dialog for 'special' units

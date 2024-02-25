@@ -4,27 +4,37 @@ Simple systemctl wrapper - see systemctl(1) for further information.
 
 import subprocess
 import re
-from typing import Final
+from enum import StrEnum
+
+
+class SystemdItemCommand(StrEnum):
+    STATUS = 'status'
+    START = 'start'
+    STOP = 'stop'
+    RESTART = 'restart'
+    ENABLE = 'enable'
+    DISABLE = 'disable'
+    REENABLE = 'reenable'
+
+
+class SystemdListType(StrEnum):
+    UNIT = 'units'
+    TEMPLATE = 'unit-files'
+
+
+class SystemdConnectType(StrEnum):
+    SYSTEM = 'system'
+    USER = 'user'
 
 
 class SystemctlError(Exception):
     pass
 
 
-class SystemctlCallType:
-    SYSTEM: Final[str] = 'system'
-    USER: Final[str] = 'user'
-
-
-class SystemctlListType:
-    UNITS: Final[str] = 'units'
-    UNITS_FILES: Final[str] = 'unit-files'
-
-
 class Systemctl:
 
     def __init__(self, **kwargs):
-        self.systemctl = kwargs.pop('systemctl', '/usr/bin/systemctl')
+        self.systemctl = kwargs.pop('', '/usr/bin/systemctl')
         self.encoding = kwargs.pop('encoding', 'UTF-8')
 
     def set_systemctl(self, systemctl: str):
@@ -33,9 +43,21 @@ class Systemctl:
     def set_encoding(self, encoding: str):
         self.encoding = encoding
 
-    def status(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
+    def run_version_command(self) -> str:
         sp = subprocess.run(
-            f'{self.systemctl} --{call_type} status -- {unit_id}',
+            f'{self.systemctl} --version',
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+        stderr = sp.stderr.decode(encoding=self.encoding)
+        if stderr != '':
+            raise SystemctlError(stderr.strip())
+
+        return sp.stdout.decode(encoding=self.encoding).strip().split('\n')[0]
+
+    def run_item_command(self, item_command: SystemdItemCommand, item_id: str,
+                         connect_type: SystemdConnectType = SystemdConnectType.SYSTEM) -> str:
+        sp = subprocess.run(
+            f'{self.systemctl} --{connect_type} {item_command} -- {item_id}',
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
         stderr = sp.stderr.decode(encoding=self.encoding)
@@ -44,85 +66,10 @@ class Systemctl:
 
         return sp.stdout.decode(encoding=self.encoding).strip()
 
-    def start(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
+    def run_list_command(self, list_type: SystemdListType,
+                         connect_type: SystemdConnectType = SystemdConnectType.SYSTEM) -> []:
         sp = subprocess.run(
-            f'{self.systemctl} --{call_type} start -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-    def stop(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} stop -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-    def restart(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} restart -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-    def is_active(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} is-active -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-        return sp.stdout.decode(encoding=self.encoding).strip()
-
-    def enable(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} enable -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-    def disable(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} disable -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-    def reenable(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} reenable -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-    def is_enabled(self, unit_id: str, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} is-enabled -- {unit_id}',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr.strip())
-
-        return sp.stdout.decode(encoding=self.encoding).strip()
-
-    def list_units(self, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} list-units',
+            f'{self.systemctl} --quiet --{connect_type} list-{list_type}',
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
         stderr = sp.stderr.decode(encoding=self.encoding)
@@ -130,32 +77,25 @@ class Systemctl:
             raise SystemctlError(stderr.strip())
 
         unit_list = []
-        lines = sp.stdout.decode(encoding=self.encoding).split('\n')
-        for i in range(1, len(lines) - 7):
-            unit_list.append(re.split('\s+', lines[i][2:], 4))
+        for line in sp.stdout.decode(encoding=self.encoding).split('\n'):
+            # skip empty lines
+            if line != '':
+                # remove indicators (only units are effected)
+                if list_type == SystemdListType.UNIT:
+                    line = line[2:]
+
+                # split lines to list (descriptions may contain spaces, but there are only 5 columns)
+                prop_list = re.split('\s+', line.strip(), 4)
+
+                # only fixed number of columns allowed
+                if list_type == SystemdListType.UNIT:
+                    requested_len = 5
+                else:
+                    requested_len = 3
+                current_len = len(prop_list)
+                if current_len != requested_len:
+                    raise SystemctlError('Unit must have exactly {} properties but it has {}\n{}'
+                                         .format(requested_len, current_len, prop_list))
+                unit_list.append(prop_list)
 
         return unit_list
-
-    def list_unit_files(self, call_type=SystemctlCallType.SYSTEM):
-        sp = subprocess.run(
-            f'{self.systemctl} --{call_type} list-unit-files',
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        stderr = sp.stderr.decode(encoding=self.encoding)
-        if stderr != '':
-            raise SystemctlError(stderr)
-
-        file_list = []
-        lines = sp.stdout.decode(encoding=self.encoding).split('\n')
-        for i in range(1, len(lines) - 3):
-            file_list.append(re.split('\s+', lines[i]))
-
-        return file_list
-
-    def list(self, list_type=SystemctlListType.UNITS, call_type=SystemctlCallType.SYSTEM):
-        if list_type == SystemctlListType.UNITS:
-            return self.list_units(call_type)
-        elif list_type == SystemctlListType.UNITS_FILES:
-            return self.list_unit_files(call_type)
-
-        return []

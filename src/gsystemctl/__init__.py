@@ -15,7 +15,7 @@ _ = gettext.gettext
 
 APP_NAME = 'gsystemctl'
 APP_DESCRIPTION = _('Control the systemd service manager')
-APP_VERSION = '0.1.1'
+APP_VERSION = '0.2.0'
 APP_ID = 'com.github.ferkretz.gsystemctl'
 APP_WEBSITE = 'https://github.com/ferkretz/gsystemctl'
 APP_COPYRIGHT = _('Copyright © {} Ferenc Kretz').format('2024')

@@ -12,13 +12,13 @@ Dependencies:
 Keywords:
 - systemd
 - python
-- Gtk 3
+- Gtk 4
 
 To install `gsystemctl` (something like this):
 ```bash
-$ pip install gsystemctl-0.1.0.tar.gz
+$ pip install gsystemctl-0.2.0.tar.gz
 ```
 or simply to run (without installation):
 ```bash
-$ gsystemctl-gtk3.py
+$ gsystemctl-gtk.py
 ```

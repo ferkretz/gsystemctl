@@ -3,7 +3,7 @@ import sys
 from gi.repository import Gio, Gtk
 
 from gsystemctl import *
-from gsystemctl.ui.gtk3.mainwindow import MainWindow
+from gsystemctl.ui.gtk4.mainwindow import MainWindow
 
 
 class Application(Gtk.Application):
