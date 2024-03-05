@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='gsystemctl',
-    version='0.2.0',
+    version='0.3.0',
     description='Control the systemd service manager',
     license='GPLv3',
     classifiers=[
@@ -24,14 +24,15 @@ setup(
         exclude=[],
     ),
     package_data={
-        'gsystemctl.ui.image': ['*.png'],
+        'gsystemctl': ['*.ini'],
+        'gsystemctl.ui.icons.160x160': ['*.png'],
     },
     entry_points={
         'gui_scripts': [
-            'gsystemctl-gtk=gsystemctl.ui.gtk4.application:run',
+            'gsystemctl=gsystemctl.ui.application:run',
         ],
     },
     install_requires=['PyGObject>=3.40'],
     include_package_data=True,
-    python_requires='>=3'
+    python_requires='>=3.10'
 )

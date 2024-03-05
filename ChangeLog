@@ -10,3 +10,12 @@ Version 0.2.0
 - add filter
 - add statusbar
 - add parameter input dialog for 'special' units
+
+Version 0.3.0
+- new dialogs
+- systemctl running in separate thread
+- systemctl indicator
+- new systemctl commands
+- add case sensitive filter
+- settings
+- autosave/autoload the components states

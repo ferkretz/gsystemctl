@@ -12,12 +12,19 @@ class SystemdItemCommand(StrEnum):
     START = 'start'
     STOP = 'stop'
     RESTART = 'restart'
+    RELOAD = 'reload'
+    ISOLATE = 'isolate'
+    KILL = 'kill'
+    CLEAN = 'clean'
+    FREEZE = 'freeze'
+    THAW = 'thaw'
     ENABLE = 'enable'
     DISABLE = 'disable'
     REENABLE = 'reenable'
+    PRESET = 'preset'
 
 
-class SystemdListType(StrEnum):
+class SystemdItemType(StrEnum):
     UNIT = 'units'
     TEMPLATE = 'unit-files'
 
@@ -34,61 +41,67 @@ class SystemctlError(Exception):
 class Systemctl:
 
     def __init__(self, **kwargs):
-        self.systemctl = kwargs.pop('', '/usr/bin/systemctl')
-        self.encoding = kwargs.pop('encoding', 'UTF-8')
+        self._path = kwargs.pop('path', '/usr/bin/systemctl')
+        self._encoding = kwargs.pop('encoding', 'UTF-8')
 
-    def set_systemctl(self, systemctl: str):
-        self.systemctl = systemctl
+    def set_path(self, path: str):
+        self._path = path
 
     def set_encoding(self, encoding: str):
-        self.encoding = encoding
+        self._encoding = encoding
+
+    def get_path(self) -> str:
+        return self._path
+
+    def get_encoding(self) -> str:
+        return self._encoding
 
     def run_version_command(self) -> str:
         sp = subprocess.run(
-            f'{self.systemctl} --version',
+            f'{self._path} --version',
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
-        stderr = sp.stderr.decode(encoding=self.encoding)
+        stderr = sp.stderr.decode(encoding=self._encoding)
         if stderr != '':
             raise SystemctlError(stderr.strip())
 
-        return sp.stdout.decode(encoding=self.encoding).strip().split('\n')[0]
+        return sp.stdout.decode(encoding=self._encoding).strip().split('\n')[0]
 
     def run_item_command(self, item_command: SystemdItemCommand, item_id: str,
                          connect_type: SystemdConnectType = SystemdConnectType.SYSTEM) -> str:
         sp = subprocess.run(
-            f'{self.systemctl} --{connect_type} {item_command} -- {item_id}',
+            f'{self._path} --{connect_type} {item_command} -- {item_id}',
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
-        stderr = sp.stderr.decode(encoding=self.encoding)
+        stderr = sp.stderr.decode(encoding=self._encoding)
         if stderr != '':
             raise SystemctlError(stderr.strip())
 
-        return sp.stdout.decode(encoding=self.encoding).strip()
+        return sp.stdout.decode(encoding=self._encoding).strip()
 
-    def run_list_command(self, list_type: SystemdListType,
+    def run_list_command(self, item_type: SystemdItemType,
                          connect_type: SystemdConnectType = SystemdConnectType.SYSTEM) -> []:
         sp = subprocess.run(
-            f'{self.systemctl} --quiet --{connect_type} list-{list_type}',
+            f'{self._path} --quiet --{connect_type} list-{item_type}',
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
-        stderr = sp.stderr.decode(encoding=self.encoding)
+        stderr = sp.stderr.decode(encoding=self._encoding)
         if stderr != '':
             raise SystemctlError(stderr.strip())
 
-        unit_list = []
-        for line in sp.stdout.decode(encoding=self.encoding).split('\n'):
+        item_list = []
+        for line in sp.stdout.decode(encoding=self._encoding).split('\n'):
             # skip empty lines
             if line != '':
                 # remove indicators (only units are effected)
-                if list_type == SystemdListType.UNIT:
+                if item_type == SystemdItemType.UNIT:
                     line = line[2:]
 
                 # split lines to list (descriptions may contain spaces, but there are only 5 columns)
                 prop_list = re.split('\s+', line.strip(), 4)
 
                 # only fixed number of columns allowed
-                if list_type == SystemdListType.UNIT:
+                if item_type == SystemdItemType.UNIT:
                     requested_len = 5
                 else:
                     requested_len = 3
@@ -96,6 +109,6 @@ class Systemctl:
                 if current_len != requested_len:
                     raise SystemctlError('Unit must have exactly {} properties but it has {}\n{}'
                                          .format(requested_len, current_len, prop_list))
-                unit_list.append(prop_list)
+                item_list.append(prop_list)
 
-        return unit_list
+        return item_list
