@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='gsystemctl',
-    version='0.3.0',
+    version='0.3.1',
     description='Control the systemd service manager',
     license='GPLv3',
     classifiers=[
