@@ -4,6 +4,7 @@ from gsystemctl.globals import *
 from gsystemctl.systemctl import SystemdConnectType, SystemdItemType
 from gsystemctl.ui.systemditemfactory import SystemdItemFactory
 from gsystemctl.ui.systemditemfilter import SystemdItemFilter
+from gsystemctl.ui.systemditemsorter import SystemdItemSorter
 
 
 class SystemdItemScrolled(Gtk.ScrolledWindow):
@@ -15,13 +16,15 @@ class SystemdItemScrolled(Gtk.ScrolledWindow):
 
         self._column_view = Gtk.ColumnView(show_column_separators=True, show_row_separators=True)
         self._item_store = Gio.ListStore()
+        self._item_sort_model = Gtk.SortListModel(model=self._item_store, sorter=self._column_view.get_sorter())
         self._item_filter = SystemdItemFilter()
-        self._item_filter_model = Gtk.FilterListModel(model=self._item_store, filter=self._item_filter)
+        self._item_filter_model = Gtk.FilterListModel(model=self._item_sort_model, filter=self._item_filter)
         self._item_selection = Gtk.SingleSelection(model=self._item_filter_model)
 
         for column_index, column_title in enumerate(self.get_column_titles()):
             factory = SystemdItemFactory(self, column_index)
-            view_column = Gtk.ColumnViewColumn(title=column_title, factory=factory, resizable=True)
+            sorter = SystemdItemSorter(column_index)
+            view_column = Gtk.ColumnViewColumn(title=column_title, factory=factory, sorter=sorter, resizable=True)
             self._column_view.append_column(view_column)
         self._column_view.set_model(self._item_selection)
 

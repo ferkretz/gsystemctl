@@ -20,6 +20,7 @@ class SystemdItemFactory(Gtk.SignalListItemFactory):
 
         self.connect('setup', self.setup)
         self.connect('bind', self.bind)
+        self.connect('unbind', self.unbind)
 
     def get_nat_chars(self) -> int:
         if self._item_window.get_item_type() == SystemdItemType.UNIT:
@@ -45,3 +46,12 @@ class SystemdItemFactory(Gtk.SignalListItemFactory):
         gesture.connect('pressed', lambda gc, np, x, y: self._item_window.get_item_view()
                         .get_model().select_item(cell.get_position(), True))
         cell_widget.add_controller(gesture)
+
+    def unbind(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):
+        inscription: Gtk.Inscription = cell.get_child()
+        inscription.set_text(None)
+
+        cell_widget = inscription.get_parent()
+        cell_widget.set_tooltip_text(None)
+        gesture: Gtk.EventController = cell_widget.observe_controllers().get_item(0)
+        cell_widget.remove_controller(gesture)
