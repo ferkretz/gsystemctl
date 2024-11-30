@@ -7,9 +7,9 @@ from gi.repository import Gdk, Gio, GLib, Gtk
 
 from gsystemctl.globals import *
 from gsystemctl.config import Config
-from gsystemctl.systemctl import Systemctl, SystemctlError, SystemdItemCommand
+from gsystemctl.systemctl import Systemctl, SystemctlError, SystemdItemCommand, SystemdSystemCommand
 from gsystemctl.ui.dialogs import AboutDialog, ErrorDialog, ParamSetterDialog, SettingsDialog, StatusDialog
-from gsystemctl.ui.menus import HamburgerMenu, SystemctlMenu
+from gsystemctl.ui.menus import HamburgerMenu, SystemctlMenu, SystemCommandMenu
 from gsystemctl.ui.systemditem import SystemdItem
 from gsystemctl.ui.systemditemnotebook import SystemdNotebook
 from gsystemctl.ui.systemditemscrolled import SystemdItemScrolled
@@ -34,6 +34,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self._filter_entry.set_text(self._config.get('item-filter', 'text'))
         self._case_button = Gtk.ToggleButton(icon_name='format-text-rich', tooltip_text=_('Case sensitive search'))
         self._case_button.set_active(self._config.get('item-filter', 'case-sensitive'))
+        self._system_command_button = Gtk.MenuButton(icon_name='system-run', tooltip_text=_('System commands'))
+        self._system_command_button.set_popover(SystemCommandMenu())
         self._hamburger_button = Gtk.MenuButton(icon_name='open-menu', tooltip_text=_('Hamburger'))
         self._hamburger_button.set_popover(HamburgerMenu())
         if self._auto_save:
@@ -43,6 +45,7 @@ class MainWindow(Gtk.ApplicationWindow):
         title_bar.pack_start(self._filter_entry)
         title_bar.pack_start(self._case_button)
         title_bar.pack_end(self._hamburger_button)
+        title_bar.pack_end(self._system_command_button)
 
         self._systemd_notebook = SystemdNotebook()
         if self._auto_save:
@@ -76,6 +79,16 @@ class MainWindow(Gtk.ApplicationWindow):
         action.connect('activate', lambda a, p: self.close())
         action_group.add_action(action)
         self.insert_action_group('hamburger', action_group)
+
+        action_group = Gio.SimpleActionGroup()
+        for action_name in ('default', 'rescue', 'emergency',
+                            'halt', 'poweroff', 'reboot', 'sleep', 'suspend', 'hibernate'):
+            action = Gio.SimpleAction(name=action_name)
+            action.connect('activate',
+                           self.on_system_command_activate,
+                           SystemdSystemCommand[action_name.upper()])
+            action_group.add_action(action)
+        self.insert_action_group('system-command', action_group)
 
         action_group = Gio.SimpleActionGroup()
         for action_name in ('status', 'start', 'stop', 'restart', 'enable', 'disable', 'reenable',
@@ -121,6 +134,26 @@ class MainWindow(Gtk.ApplicationWindow):
         settings_dialog.add_button(_('Cancel'), lambda cb, sd: sd.close())
         settings_dialog.add_button(_('Save'), save_settings)
         settings_dialog.show()
+
+    def on_system_command_activate(self, action: Gio.SimpleAction, parameter: GLib.Variant,
+                                   system_command: SystemdSystemCommand):
+        def run():
+            error_msg = None
+            try:
+                self._systemctl.run_system_command(system_command)
+            except SystemctlError as error:
+                error_msg = error.args[0]
+            GLib.idle_add(lambda: on_done(error_msg))
+
+        def on_done(error_msg):
+            if error_msg:
+                error_dialog = ErrorDialog(transient_for=self, error_text=error_msg)
+                error_dialog.add_button(_('Close'), lambda cb, ed: ed.close())
+                error_dialog.show()
+
+        thread = threading.Thread(target=run)
+        thread.daemon = True
+        thread.start()
 
     def on_systemctl_command_activate(self, action: Gio.SimpleAction, parameter: GLib.Variant,
                                       item_command: SystemdItemCommand):

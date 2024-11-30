@@ -5,8 +5,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='gsystemctl',
-    version='0.3.2',
-    description='Control the systemd service manager',
+    version='0.4.0',
+    description='Control the systemd service manager with Gtk GUI, instead of console',
     long_description=long_description,
     long_description_content_type="text/markdown",
     license='GPLv3',

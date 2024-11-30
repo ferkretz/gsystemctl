@@ -16,7 +16,7 @@ Keywords:
 
 To install `gsystemctl` (something like this):
 ```bash
-$ pip install gsystemctl-0.3.2.tar.gz
+$ pip install gsystemctl-0.4.0.tar.gz
 ```
 or simply to run (without installation):
 ```bash

@@ -9,11 +9,33 @@ class HamburgerMenu(Gtk.PopoverMenu):
 
         menu = Gio.Menu()
         section = Gio.Menu()
-        section.append('About', 'hamburger.about')
-        section.append('Settings', 'hamburger.settings')
+        section.append(_('About'), 'hamburger.about')
+        section.append(_('Settings'), 'hamburger.settings')
         menu.append_section(None, section)
         section = Gio.Menu()
-        section.append('Exit', 'hamburger.exit')
+        section.append(_('Exit'), 'hamburger.exit')
+        menu.append_section(None, section)
+
+        self.set_menu_model(menu)
+
+
+class SystemCommandMenu(Gtk.PopoverMenu):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs, has_arrow=False)
+
+        menu = Gio.Menu()
+        section = Gio.Menu()
+        section.append(_('Default'), 'system-command.default')
+        section.append(_('Rescue'), 'system-command.rescue')
+        section.append(_('Emergency'), 'system-command.emergency')
+        menu.append_section(None, section)
+        section = Gio.Menu()
+        section.append(_('Halt'), 'system-command.halt')
+        section.append(_('Poweroff'), 'system-command.poweroff')
+        section.append(_('Reboot'), 'system-command.reboot')
+        section.append(_('Sleep'), 'system-command.sleep')
+        section.append(_('Suspend'), 'system-command.suspend')
+        section.append(_('Hibernate'), 'system-command.hibernate')
         menu.append_section(None, section)
 
         self.set_menu_model(menu)

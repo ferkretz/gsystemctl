@@ -34,6 +34,18 @@ class SystemdConnectType(StrEnum):
     USER = 'user'
 
 
+class SystemdSystemCommand(StrEnum):
+    DEFAULT = 'default'
+    RESCUE = 'rescue'
+    EMERGENCY = 'emergency'
+    HALT = 'halt'
+    POWEROFF = 'poweroff'
+    REBOOT = 'reboot'
+    SLEEP = 'sleep'
+    SUSPEND = 'suspend'
+    HIBERNATE = 'hibernate'
+
+
 class SystemctlError(Exception):
     pass
 
@@ -98,7 +110,7 @@ class Systemctl:
                     line = line[2:]
 
                 # split lines to list (descriptions may contain spaces, but there are only 5 columns)
-                prop_list = re.split('\s+', line.strip(), 4)
+                prop_list = re.split('\\s+', line.strip(), 4)
 
                 # only fixed number of columns allowed
                 if item_type == SystemdItemType.UNIT:
@@ -112,3 +124,12 @@ class Systemctl:
                 item_list.append(prop_list)
 
         return item_list
+
+    def run_system_command(self, system_command: SystemdSystemCommand) -> None:
+        sp = subprocess.run(
+            f'{self._path} {system_command}',
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+        stderr = sp.stderr.decode(encoding=self._encoding)
+        if stderr != '':
+            raise SystemctlError(stderr.strip())

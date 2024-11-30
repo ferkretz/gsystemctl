@@ -32,7 +32,7 @@ def get_program_name() -> str:
 
 
 def get_application_description() -> str:
-    return _('Control the systemd service manager')
+    return _('Control the systemd service manager with Gtk GUI, instead of console')
 
 
 def get_application_website() -> str:
