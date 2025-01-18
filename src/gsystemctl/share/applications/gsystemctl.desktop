@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Name=gsystemctl
+GenericName=Gtk systemd control
+X-GNOME-FullName=Gtk systemd control
+Comment=Control the systemd service manager with Gtk GUI, instead of console
+Keywords=systemd;systemctl;Gtk;python
+TryExec=gsystemctl
+Exec=gsystemctl
+Icon=gsystemctl
+Terminal=false
+Type=Application
+Categories=System;Monitor;Gtk
+StartupWMClass=gsystemctl
+StartupNotify=false
+X-GNOME-UsesNotifications=false

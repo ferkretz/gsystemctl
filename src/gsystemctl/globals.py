@@ -1,7 +1,7 @@
 __all__ = ['_', 'n_', 'get_application_version', 'get_application_id',
            'get_application_name', 'get_program_name', 'get_application_description',
            'get_application_website', 'get_application_copyright',
-           'get_package_dir', 'get_user_config_dir', 'get_icon_dir', 'get_locale_dir']
+           'get_package_dir', 'get_user_config_dir', 'get_image_dir', 'get_locale_dir']
 
 import gettext
 import os
@@ -28,7 +28,7 @@ def get_application_name() -> str:
 
 
 def get_program_name() -> str:
-    return _('Gtk Systemd control')
+    return _('Gtk systemd control')
 
 
 def get_application_description() -> str:
@@ -51,8 +51,8 @@ def get_user_config_dir() -> str:
     return GLib.get_user_config_dir()
 
 
-def get_icon_dir() -> str:
-    return os.path.abspath(os.path.join(get_package_dir(), 'ui', 'icons'))
+def get_image_dir() -> str:
+    return os.path.abspath(os.path.join(get_package_dir(), 'ui', 'images'))
 
 
 def get_locale_dir() -> str:

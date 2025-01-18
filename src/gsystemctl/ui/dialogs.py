@@ -40,7 +40,7 @@ class AboutDialog(Gtk.AboutDialog, Dialog):
         self.set_license_type(Gtk.License.GPL_3_0)
         self.set_copyright(get_application_copyright())
         self.set_website(get_application_website())
-        logo_path = os.path.join(get_icon_dir(), '160x160', 'gsystemctl.png')
+        logo_path = os.path.join(get_image_dir(), 'gsystemctl-logo.png')
         self.set_logo(Gtk.Image.new_from_file(logo_path).get_paintable())
 
 
@@ -73,7 +73,7 @@ class StatusDialog(Dialog):
     def __init__(self, **kwargs):
         status_text: str = kwargs.pop('status_text', '')
 
-        super().__init__(**kwargs, title=_('Runtime information'), width_request=640, height_request=320)
+        super().__init__(**kwargs, title=_('Runtime information'), width_request=800, height_request=500)
 
         text_view = Gtk.TextView(editable=False, monospace=True, visible=True)
         text_view.get_buffer().set_text(status_text)
